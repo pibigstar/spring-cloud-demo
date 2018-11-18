@@ -21,7 +21,7 @@ public class ServiceHelloApplication {
 	String port;
 
 	@RequestMapping("/hello")
-	public String home(@RequestParam(value = "name", defaultValue = "forezp") String name) {
+	public String home(@RequestParam(value = "name", defaultValue = "pibigstar") String name) {
 		return "hi " + name + " ,i am from port:" + port;
 	}
 }
