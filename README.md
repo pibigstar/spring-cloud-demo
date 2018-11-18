@@ -1,12 +1,29 @@
 # SpringCloud 学习例子
+## 熔断器
+> 由于网络原因或者自身的原因，服务并不能保证100%可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的“雪崩”效应。
 
-Feign是一个声明式的伪Http客户端，它使得写Http客户端变得更简单。
-使用Feign，只需要创建一个接口并注解。它具有可插拔的注解特性，
-可使用Feign 注解和JAX-RS注解。Feign支持可插拔的编码器和解码器。
-Feign默认集成了Ribbon，并和Eureka结合，默认实现了负载均衡的效果。
+断路打开后，可用避免连锁故障，fallback方法可以直接返回一个固定值。
 
-简而言之：
+## Feign中使用熔断器
 
-- Feign 采用的是基于接口的注解
-- Feign 整合了ribbon，具有负载均衡的能力
-- 整合了Hystrix，具有熔断的能力
+1. 打开配置文件
+```yaml
+feign:
+  hystrix:
+    enabled: true
+```
+2. 创建服务无法调用成功时的处理器
+需要实现IHelloService 接口，并注入到Ioc容器中
+```java
+@Component
+public class HelloServiceHystrix implements IHelloService{
+    @Override
+    public String sayHelloFromFeignClient(String name) {
+        return "this is have a error, sorry:" + name;
+    }
+}
+```
+3. 调用服务时设置熔断器
+```java
+@FeignClient(value = "service-hello", fallback = HelloServiceHystrix.class)
+```
