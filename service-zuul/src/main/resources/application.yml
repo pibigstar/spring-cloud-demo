@@ -1,0 +1,20 @@
+server:
+  port: 8803
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka/
+
+spring:
+  application:
+    name: service-zuul
+
+# ≈‰÷√¬∑”…
+zuul:
+  routes:
+    api-a:
+      path: /api-a/*
+      serviceId: service-feign
+    api-b:
+      path: /api-b/*
+      serviceId: service-feign

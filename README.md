@@ -1,29 +1,48 @@
 # SpringCloud 学习例子
-## 熔断器
-> 由于网络原因或者自身的原因，服务并不能保证100%可用，如果单个服务出现问题，调用这个服务就会出现线程阻塞，此时若有大量的请求涌入，Servlet容器的线程资源会被消耗完毕，导致服务瘫痪。服务与服务之间的依赖性，故障会传播，会对整个微服务系统造成灾难性的严重后果，这就是服务故障的“雪崩”效应。
 
-断路打开后，可用避免连锁故障，fallback方法可以直接返回一个固定值。
+## Zuul路由转发
+> Zuul的主要功能是路由转发和过滤器。路由功能是微服务的一部分，
+比如／api/user转发到到user服务，/api/shop转发到到shop服务。
+zuul默认和Ribbon结合实现了负载均衡的功能。
 
-## Feign中使用熔断器
 
-1. 打开配置文件
-```yaml
-feign:
-  hystrix:
-    enabled: true
+## feign使用Zuul
+
+1. 添加依赖
+```xml
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+        </dependency>
 ```
-2. 创建服务无法调用成功时的处理器
-需要实现IHelloService 接口，并注入到Ioc容器中
+2. 配置路由
+```yaml
+zuul:
+  routes:
+    api-a:
+      path: /api-a/*
+      serviceId: service-feign
+    api-b:
+      path: /api-b/*
+      serviceId: service-feign
+```
+3. 启动类中开启路由转发
 ```java
-@Component
-public class HelloServiceHystrix implements IHelloService{
-    @Override
-    public String sayHelloFromFeignClient(String name) {
-        return "this is have a error, sorry:" + name;
-    }
+@SpringBootApplication
+@EnableEurekaClient
+@EnableDiscoveryClient
+@EnableZuulProxy // 开启路由代理
+public class ServiceZuulApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ServiceZuulApplication.class, args);
+	}
 }
 ```
-3. 调用服务时设置熔断器
-```java
-@FeignClient(value = "service-hello", fallback = HelloServiceHystrix.class)
-```
+
+## 浏览器中调用
+通过不同的地址调用不同的服务
+
+http://localhost:8803/api-a/hello?name=pibigstar
+
+http://localhost:8803/api-b/hello?name=pibigstar

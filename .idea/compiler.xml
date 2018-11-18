@@ -9,6 +9,7 @@
         <module name="eureka-server" />
         <module name="service-feign" />
         <module name="service-hello" />
+        <module name="service-zuul" />
         <module name="spring-cloud-demo" />
       </profile>
     </annotationProcessing>
@@ -16,6 +17,7 @@
       <module name="eureka-server" target="1.8" />
       <module name="service-feign" target="1.8" />
       <module name="service-hello" target="1.8" />
+      <module name="service-zuul" target="1.8" />
       <module name="spring-cloud-demo" target="1.8" />
     </bytecodeTargetLevel>
   </component>
