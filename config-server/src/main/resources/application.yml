@@ -18,3 +18,8 @@ spring:
           username:
           # 配置仓库密码
           password:
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8080/eureka/

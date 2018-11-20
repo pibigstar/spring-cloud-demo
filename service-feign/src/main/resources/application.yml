@@ -7,7 +7,7 @@ eureka:
 spring:
   application:
     name: service-feign
-# ´ò¿ªÈÛ¶ÏÆ÷
+# é…ç½®ç†”æ–­å™¨
 feign:
   hystrix:
     enabled: true
