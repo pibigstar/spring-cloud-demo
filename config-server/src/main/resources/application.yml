@@ -1,0 +1,20 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: config-server
+
+  # 配置配置文件地址
+  cloud:
+    config:
+      label: feat-5  # 设置分支
+      server:
+        git:
+          # git仓库地址
+          uri: https://github.com/pibigstar/spring-cloud-demo/
+          # 配置仓库下的路径
+          search-paths: spring-cloud-config
+          # 配置仓库用户名
+          username:
+          # 配置仓库密码
+          password:

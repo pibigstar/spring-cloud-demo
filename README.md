@@ -1,60 +1,85 @@
 # SpringCloud 学习例子
 
-## Zuul路由转发
-> Zuul的主要功能是路由转发和过滤器。路由功能是微服务的一部分，
-比如／api/user转发到到user服务，/api/shop转发到到shop服务。
-zuul默认和Ribbon结合实现了负载均衡的功能。
-
-
-## feign使用Zuul
+## 配置文件服务器(config-server)
+> 使用配置服务来保存各个服务的配置文件
 
 1. 添加依赖
 ```xml
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
-        </dependency>
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-config-server</artifactId>
+</dependency>
 ```
-2. 配置路由
-```yaml
-zuul:
-  routes:
-    api-a:
-      path: /api-a/*
-      serviceId: service-feign
-    api-b:
-      path: /api-b/*
-      serviceId: service-feign
-```
-3. 启动类中开启路由转发
+2. 打开配置服务功能
 ```java
 @SpringBootApplication
-@EnableEurekaClient
-@EnableDiscoveryClient
-@EnableZuulProxy // 开启路由代理
-public class ServiceZuulApplication {
+@EnableConfigServer // 开启配置服务器功能
+public class ConfigServerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ServiceZuulApplication.class, args);
+		SpringApplication.run(ConfigServerApplication.class, args);
 	}
 }
 ```
+3. 设置配置文件
+```yaml
+server:
+  port: 8081
+spring:
+  application:
+    name: config-server
 
-## 浏览器中调用
-通过不同的地址调用不同的服务
+  # 配置配置文件地址
+  cloud:
+    config:
+      default-label: feat-5  # 设置分支
+      server:
+        git:
+          # git仓库地址
+          uri: ://github.com/pibigstar/spring-cloud-demo
+          # 配置仓库下的路径
+          search-paths: spring-cloud-config
+          # 配置仓库用户名
+          username:
+          # 配置仓库密码
+          password:
+```
 
-http://localhost:8803/api-a/hello?name=pibigstar
+## 从配置服务器中读取配置(config-client)
 
-http://localhost:8803/api-b/hello?name=pibigstar
+1. 添加依赖
+
+```xml
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-config</artifactId>
+</dependency>
+```
+2. 配置配置文件
+
+必须是这个名字，不然不是报错，就是拿不到信息
+
+**bootstrap.properties** 
+```properties
+server.port=8901
+spring.application.name=config-client
+
+# 配置服务器服务中心地址
+spring.cloud.config.uri=http://localhost:8081/
+spring.cloud.config.label=feat-5
+spring.cloud.config.profile=dev
+
+#dev开发环境配置文件
+#test测试环境
+#pro正式环境
+```
+3. 使用
+
+```java
+@Value("${name}")
+private String name;
+@Value("${message}")
+private String message;
+```
 
 
-## 服务过滤
-
-1. filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：
-- pre：路由之前
-- routing：路由之时
-- post： 路由之后
-- error：发送错误调用
-2. filterOrder：过滤的顺序
-3. shouldFilter：这里可以写逻辑判断，是否要过滤，本文true,永远过滤。
-4. run：过滤器的具体逻辑。可用很复杂，包括查sql，nosql去判断该请求到底有没有权限访问
