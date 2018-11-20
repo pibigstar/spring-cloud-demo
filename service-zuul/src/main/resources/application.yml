@@ -9,7 +9,7 @@ spring:
   application:
     name: service-zuul
 
-# ÅäÖÃÂ·ÓÉ
+# è®¾ç½®è·¯ç”±è½¬å‘
 zuul:
   routes:
     api-a:

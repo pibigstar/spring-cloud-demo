@@ -46,3 +46,15 @@ public class ServiceZuulApplication {
 http://localhost:8803/api-a/hello?name=pibigstar
 
 http://localhost:8803/api-b/hello?name=pibigstar
+
+
+## 服务过滤
+
+1. filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：
+- pre：路由之前
+- routing：路由之时
+- post： 路由之后
+- error：发送错误调用
+2. filterOrder：过滤的顺序
+3. shouldFilter：这里可以写逻辑判断，是否要过滤，本文true,永远过滤。
+4. run：过滤器的具体逻辑。可用很复杂，包括查sql，nosql去判断该请求到底有没有权限访问
