@@ -9,7 +9,7 @@
 - feat-4: 使用Zuul实现路由转发功能
 - feat-5: 配置文件服务器(config-server)
 - feat-6: 配置高可用（带注册中心）文件服务器(config-server)
-
+- feat-7: 消息总线（rabbitmq）使用
 ## 服务的注册和发现
 
 #### 使用
@@ -383,6 +383,42 @@ private String name;
 private String message;
 ```
 
+## feat-6 消息总线RabbitMq使用
+
+### 使用
+1. 添加依赖
+```xml
+<dependency>
+	<groupId>org.springframework.cloud</groupId>
+	<artifactId>spring-cloud-starter-bus-amqp</artifactId>
+</dependency>
+```
+2. 添加配置
+```properties
+# rabbitmq配置
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+
+spring.cloud.bus.enabled=true
+spring.cloud.bus.trace.enabled=true
+management.endpoints.web.exposure.include=bus-refresh
+```
+3. 添加注解
+```java
+@SpringBootApplication
+@EnableDiscoveryClient
+@EnableEurekaClient
+@RefreshScope
+@RestController
+public class ConfigClientApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(ConfigClientApplication.class, args);
+	}
+}
+```
 
 
 
