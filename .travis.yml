@@ -1,0 +1,11 @@
+language: java
+
+# true 表示什么都不执行
+before_install: true
+install: true
+before_cache: true
+script: true
+
+branches:
+  only:
+    - master   # 只监视master分支

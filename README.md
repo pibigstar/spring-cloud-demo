@@ -1,5 +1,5 @@
 # SpringCloud 学习例子
-
+[![Build Status](https://travis-ci.org/pibigstar/spring-cloud-demo.svg?branch=master)](https://travis-ci.org/pibigstar/spring-cloud-demo)
 
 通过分支来对项目归类，详情可通过Issue查看每个分支具体内容
 
