@@ -9,6 +9,8 @@
 - feat-4: 使用Zuul实现路由转发功能
 - feat-5: 配置文件服务器(config-server)
 - feat-6: 配置高可用（带注册中心）文件服务器(config-server)
+- feat-7: 使用消息总线rabbitMq
+- feat-8: 使用zipkin进行服务监控与追踪
 
 ## 服务的注册和发现
 
@@ -382,6 +384,35 @@ private String name;
 @Value("${message}")
 private String message;
 ```
+## feat-8: 使用zipkin进行服务监控与追踪
+
+### 使用
+1. 下载zipkin架包
+
+[点击下载](https://dl.bintray.com/openzipkin/maven/io/zipkin/java/zipkin-server/)
+
+启动zipkin：
+```java
+java -jar zipkin-server-2.11.8-exec.jar
+```
+浏览器访问：http://localhost:9411 如果能正常打开，则证明启动成功
+
+2. 添加依赖
+```xml
+<dependency>
+   <groupId>org.springframework.cloud</groupId>
+   <artifactId>spring-cloud-starter-zipkin</artifactId>
+</dependency>
+```
+3. 添加配置
+
+```yaml
+spring:
+  zipkin:
+    base-url: http://localhost:9411
+```
+**注意：** 一定要先访问下项目的接口，不然在Zipkin中是监控不到的，只能监控访问过的接口
+
 
 
 
